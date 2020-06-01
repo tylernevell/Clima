@@ -15,6 +15,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var searchTextField: UITextField!
     
+    var weatherManager = WeatherManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,7 +37,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        
+        // allows user to escape keyboard by checking if they've inputed something
         if textField.text != "" {
             return true
         } else {
@@ -48,7 +53,12 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         // Use searchTextField.text to find weather for city
+        // if user enters valid string, pass the user input along to the WeatherManager class through cityName parameter
+        if let city = searchTextField.text {
+            weatherManager.fetchWeather(cityName: city)
+        }
         
+        // clear out input box
         searchTextField.text = ""
     }
     
