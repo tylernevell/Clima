@@ -71,7 +71,6 @@ extension WeatherViewController: UITextFieldDelegate {
         // if user enters valid string, pass the user input along to the WeatherManager class through cityName parameter
         if let city = searchTextField.text {
             weatherManager.fetchWeather(cityName: city)
-            cityLabel.text = city
         }
         
         // clear out input box
@@ -87,6 +86,7 @@ extension WeatherViewController: WeatherManagerDelegate {
         DispatchQueue.main.async {
             self.temperatureLabel.text = weather.temperatureString
             self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+            self.cityLabel.text = weather.cityName
         }
     }
     
@@ -100,16 +100,19 @@ extension WeatherViewController: WeatherManagerDelegate {
 extension WeatherViewController: CLLocationManagerDelegate {
     
     @IBAction func currentLocationButtonPressed(_ sender: UIButton) {
-        locationManager.startUpdatingLocation()
+        locationManager.requestLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
+            locationManager.stopUpdatingLocation()
+            
             let lat = location.coordinate.latitude
             let lon = location.coordinate.longitude
+            
             weatherManager.fetchWeather(latitude: lat, longitude: lon)
         }
-        locationManager.stopUpdatingLocation()
+        
     }
     
     // failure to implement didFailWithError will result in a crash and is a programmer error
